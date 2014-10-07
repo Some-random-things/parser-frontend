@@ -1,6 +1,6 @@
 /* Empty. Add your own CSS if you like */
 .width{
-    width: 100%;
+    width: 100% !important;
 }
 .cell{
     border: 2px solid lavender;
@@ -10,8 +10,6 @@
 
 
 ul {
-    text-align: left;
-    display: inline;
     margin: 0;
     list-style: none;
     -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
@@ -61,6 +59,7 @@ ul li:hover ul {
     visibility: visible;
 }
 #options{
+    width: 100% !important;
 }
 .fullpage-div{
     position: absolute;
@@ -80,4 +79,7 @@ ul li:hover ul {
     background-color: #ffffff !important;
     opacity: .8 !important;
     font-size: 60px;
+}
+.button{
+    border-radius: 0px !important;
 }

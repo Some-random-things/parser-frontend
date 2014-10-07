@@ -6,16 +6,11 @@ angular.module('starter.controllers', [])
 .controller('QueryCtrl', function($scope, $state, $stateParams, $http){
 
 $scope.params = $state.params;
-    $scope.loading = true;
-    $http.get("http://ams2.imilka.co:8080/links/count?query="+$scope.params.query)
-        .success(function (data, status, headers, config) {
-            console.log(data)
-            $scope.data = data;
-            $scope.loading = false;
-        })
+
+
 
 })
-.controller('MainCtrl', function($scope, $state, $stateParams, $location){
+.controller('MainCtrl', function($scope, $state, $stateParams, $location, $http){
     $scope.count = function(a){
         if(a != undefined)
         $location.path('main/query/'+a);
@@ -23,8 +18,42 @@ $scope.params = $state.params;
     $scope.wordLeft = true;
     $scope.wordRight = true;
 
-    $scope.options = {
+    $scope.optio = {
         1 : {text: 'Левое слово', model: 'wordLeft', checked: true }
     }
+        $scope.counter = 0;
 
-})
+        $scope.queryString = "";
+
+        $scope.sendQuery = function(a){
+            console.log(a)
+            $scope.loading = true;
+            $scope.counter += 1;
+            $http.get("http://ams2.imilka.co/api/links/count?query="+a)
+                .success(function (data, status, headers, config) {
+                    $scope.counter -= 1;
+                    if($scope.counter == 0){
+                        console.log(data)
+                        $scope.data = data;
+                        $scope.loading = false;
+                    }
+                })
+        }
+
+        $scope.showOptions = function(name){
+        }
+        
+        $scope.options = [
+            {id: 'partOfSpeechLeft', name: 'Часть речи (Л)', values: ['Глагол', 'Существительное'] },
+            {id: 'partOfSpeechLeft', name: 'Часть речи (П)', values: ['Глагол', 'Существительное'] }
+        ];
+
+        $scope.wordProperties = [
+            {name: "Глагол",              maker: "",        ticked: true  },
+            {name: "Существительное",  maker: "",             ticked: true },
+            {name: "Прилагательное",            maker: "",    ticked: true  },
+            {name: "Наречие",             maker: "",                 ticked: true },
+            {name: "Я забыл что еще есть",             maker: "",                ticked: true  }
+        ];
+
+    })

@@ -3,7 +3,7 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-angular.module('starter', ['ionic', 'starter.controllers'])
+angular.module('starter', ['ionic', 'starter.controllers', 'multi-select'])
 
 .config(function($stateProvider, $urlRouterProvider){
         $stateProvider
@@ -38,3 +38,22 @@ angular.module('starter', ['ionic', 'starter.controllers'])
         $httpProvider.defaults.headers.common["Content-Type"] = "application/json";
     }
     ])
+
+
+    .directive('ngModelOnblur', function() {
+        return {
+            restrict: 'A',
+            require: 'ngModel',
+            priority: 1, // needed for angular 1.2.x
+            link: function(scope, elm, attr, ngModelCtrl) {
+                if (attr.type === 'radio' || attr.type === 'checkbox') return;
+
+                elm.unbind('input').unbind('keydown').unbind('change');
+                elm.bind('blur', function() {
+                    scope.$apply(function() {
+                        ngModelCtrl.$setViewValue(elm.val());
+                    });
+                });
+            }
+        };
+    });
