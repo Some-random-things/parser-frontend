@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+
+    <div class="fullpage-div" ng-show="loading">
+        <div class="spinner" ng-show="loading">
+            <i class="icon ion-ios7-reloading"></i>
+        </div>
+    </div>
+
+<div class="row">
+    <div class="col col-10" ng-show="wordLeft">
+        Левое слово
+    </div>
+    <div class="col col-10" ng-show="partOfSpeechLongLeft">
+        Часть речи(Л)
+    </div>
+    <div class="col col-10" ng-show="wordRight">
+        Правое слово
+    </div>
+    <div class="col col-10" ng-show="partOfSpeechLongRight">
+        Часть речи(П)
+    </div>
+    <div class="col col-10" ng-show="count">
+        Кол-во связей
+    </div>
+</div>
+<div class="row" ng-repeat="object in data">
+    <div class="cell col col-10" ng-show="wordLeft">
+        <div class="row">
+            {{object.wordLeft.word}}
+        </div>
+    </div>
+    <div class="cell col col-10" ng-show="partOfSpeechLongLeft">
+        <div class="row">
+            {{object.wordLeft.partOfSpeechLong}}
+        </div>
+    </div>
+    <div class="cell col col-10" ng-show="wordRight">
+        <div class="row">
+            {{object.wordRight.word}}
+        </div>
+    </div>
+    <div class="cell col col-10" ng-show="partOfSpeechLongRight">
+        <div class="row">
+            {{object.wordRight.partOfSpeechLong}}
+        </div>
+    </div>
+    <div class="cell col col-10" ng-show="wordRight">
+        <div class="row">
+            {{object.count}}
+        </div>
+    </div>
+    <div class="col col-10">
+
+    </div>
+    <div class="col col-10">
+
+    </div>
+</div>
+</body>
+</html>

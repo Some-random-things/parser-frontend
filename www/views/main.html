@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+
+<ion-content has-bouncing="false" >
+
+    <div class="row">
+
+        <div class="col col-10 col-offset-33">
+                <label class="item item-input">
+                    <i class="icon ion-search placeholder-icon"></i>
+                    <input type="text" placeholder="Query" ng-model="queryString">
+                </label>
+        </div>
+        <div class="col col-10">
+            <div class="button button-dark width" ng-click="count(queryString)">
+                Count
+            </div>
+        </div>
+
+        <div class="col col-10">
+            <ul id="options">
+                <li> <div class="button button-light">Options</div>
+                    <ul class="list">
+                        <li class="item item-checkbox">
+                            <label class="checkbox checkbox-dark">
+                                <input type="checkbox" ng-model="wordLeft" ng-checked="wordLeft">
+                            </label>
+                            Левое слово
+                        </li>
+                        <li class="item item-checkbox">
+                            <label class="checkbox checkbox-dark">
+                                <input type="checkbox" ng-model="partOfSpeechLongLeft" ng-checked="partOfSpeechLongLeft">
+                            </label>
+                            Часть речи(Л)
+                        </li>
+                        <li class="item item-checkbox">
+                            <label class="checkbox checkbox-dark">
+                                <input type="checkbox" ng-model="wordRight" ng-checked="wordRight">
+                            </label>
+                            Правое слово
+                        </li>
+                        <li class="item item-checkbox">
+                            <label class="checkbox checkbox-dark">
+                                <input type="checkbox" ng-model="partOfSpeechLongRight" ng-checked="partOfSpeechLongRight">
+                            </label>
+                            Часть речи (П)
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+
+
+    <ion-nav-view name="query">
+    </ion-nav-view>
+
+</ion-content>
+</body>
+</html>
