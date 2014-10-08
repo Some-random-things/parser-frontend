@@ -4,80 +4,72 @@
     <title></title>
 </head>
 <body>
-
-<ion-content has-bouncing="false" >
-
+<div class="container-fluid options-container">
     <div class="row">
-        <div class="col col-20">
-            <div
-                    multi-select
-                    input-model="wordProperties"
-                    button-label="icon name"
-                    item-label="icon name maker"
-                    tick-property="ticked"
-                    class="width"
-                    >
-            </div>
-        </div>
-
-
-        <div class="col col-10" style="margin: 1px;">
-                <label class="item item-input">
-                    <i class="icon ion-search placeholder-icon"></i>
-                    <input type="text" placeholder="Query" name="queryString" ng-bind="queryString" ng-model="queryString" ng-change="sendQuery(queryString)" >
+        <div class="col-md-2">
+            <div class="row">
+                <label class="form-control">
+                    Часть речи(Л)
                 </label>
-        </div>
-        <div class="col col-10">
-            <div class="button button-dark width" ng-click="count(queryString)">
-                Count
+            </div>
+            <div class="row">
+                <div
+                        multi-select
+                        input-model="wordLeftProperties"
+                        output-model="arrayOfSelectedObjects"
+                        button-label="name"
+                        default-label="Ничего не выбрано"
+                        item-label="icon name maker"
+                        tick-property="ticked"
+                        class="width"
+                        helper-elements="all none reset"
+                        >
+                </div>
+            </div>
+            <div class="row">
+                <label class="form-control">
+                    Часть речи(П)
+                </label>
+            </div>
+            <div class="row">
+                <div
+                        multi-select
+                        input-model="wordRightProperties"
+                        button-label="name"
+                        default-label="Ничего не выбрано"
+                        item-label="icon name maker"
+                        tick-property="ticked"
+                        class="width"
+                        helper-elements="all none reset"
+                        >
+                </div>
             </div>
         </div>
 
-        <div class="col col-10">
-            <ul id="options">
-                <li> <div class="button button-light">Options</div>
-                    <ul class="list">
-                        <li class="item item-checkbox">
-                            <label class="checkbox checkbox-dark">
-                                <input type="checkbox" ng-model="wordLeft" ng-checked="wordLeft">
-                            </label>
-                            Левое слово
-                        </li>
-                        <li class="item item-checkbox">
-                            <label class="checkbox checkbox-dark">
-                                <input type="checkbox" ng-model="partOfSpeechLongLeft" ng-checked="partOfSpeechLongLeft">
-                            </label>
-                            Часть речи(Л)
-                        </li>
-                        <li class="item item-checkbox">
-                            <label class="checkbox checkbox-dark">
-                                <input type="checkbox" ng-model="wordRight" ng-checked="wordRight">
-                            </label>
-                            Правое слово
-                        </li>
-                        <li class="item item-checkbox">
-                            <label class="checkbox checkbox-dark">
-                                <input type="checkbox" ng-model="partOfSpeechLongRight" ng-checked="partOfSpeechLongRight">
-                            </label>
-                            Часть речи (П)
-                        </li>
-                    </ul>
-                </li>
-            </ul>
+
+        <div class="col-md-1">
+              <input type="text" class="form-control" placeholder="Query" name="queryString" ng-bind="queryString" ng-model="queryString"> <!--ng-change="sendQuery(queryString)" -->
+        </div>
+
+        <div class="col-md-1">
+            <button class="btn btn-black btn-function" ng-click="countQuery(queryString)">
+                Count
+            </button>
+        </div>
+
+        <div class="col-md-1">
+
         </div>
 
 
-
-        <div class="col col-50">
-            <ion-nav-view name="query">
-            </ion-nav-view>
+        <div class="col-md-7">
+            <div ui-view="query">
+            </div>
         </div>
 
     </div>
+</div>
 
 
-
-
-</ion-content>
 </body>
 </html>
