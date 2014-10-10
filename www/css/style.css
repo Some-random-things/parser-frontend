@@ -70,3 +70,24 @@ body, html {
     height: 100%;
 
 }
+
+.params-selector {
+  padding: 20px;
+}
+
+.search-query {
+  margin-top:30px;
+}
+
+.search-query input {
+  font-size:22px;
+  height:50px;
+}
+
+.params-layout-jumbotron {
+  padding: 20px;
+}
+
+.params-layout {
+  height:180px;
+}

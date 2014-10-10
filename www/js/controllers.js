@@ -3,15 +3,34 @@
  */
 angular.module('starter.controllers', [])
 
-.controller('QueryCtrl', function($scope, $state, $stateParams, $http, $filter){
+.service('dataService', function() {
+  var data = {};
+
+  var setData = function(newData) {
+    data = newData;
+  };
+
+  var getData = function() {
+    return data;
+  };
+
+  return {
+    setData: setData,
+    getData: getData
+  };
+
+})
+
+.controller('QueryCtrl', function($scope, $state, $stateParams, $http, $filter, dataService){
 
     $scope.params = $state.params;
 
     $scope.loading = true;
     $http.get("http://ams2.imilka.co/api/links/count?query="+$scope.params.query)
         .success(function (data, status, headers, config) {
-                console.log(data)
-                $scope.data = data;
+                dataService.setData(data);
+                console.log("data: " + data);
+                console.log("dsvc data: " + dataService.getData());
                 // $scope.data = $filter('filter')($scope.data, { wordLeft: {partOfSpeechShort:  } });
                 $scope.loading = false;
         })
@@ -19,6 +38,10 @@ angular.module('starter.controllers', [])
             $scope.loading = false;
         })
 
+
+    $scope.getData = function() {
+      return dataService.getData();
+    }
 })
 .controller('MainCtrl', function($scope, $state, $stateParams, $location, $http, $filter){
     $scope.countQuery = function(a){
