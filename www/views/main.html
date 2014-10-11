@@ -2,7 +2,7 @@
   <div class="container params-layout">
     <div class="row">
       <div class="col-md-6 search-query">
-          <input ng-change="countQuery(queryString)" type="text" class="form-control search-query" placeholder="Query" name="queryString" ng-bind="queryString" ng-model="queryString"> <!--ng-change="sendQuery(queryString)" -->
+          <input ng-change="countQuery(queryString)" type="text" class="form-control search-query" placeholder="Query" name="queryString" ng-init="getQueryString()" ng-bind="queryString" ng-model="queryString"> <!--ng-change="sendQuery(queryString)" -->
       </div>
       <div class="col-md-3 params-selector">
         <div class="row">

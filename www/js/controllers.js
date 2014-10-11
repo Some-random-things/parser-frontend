@@ -5,6 +5,7 @@ angular.module('starter.controllers', [])
 
 .service('dataService', function() {
   var data = {};
+  var queryString = "";
 
   var setData = function(newData) {
     data = newData;
@@ -14,9 +15,19 @@ angular.module('starter.controllers', [])
     return data;
   };
 
+  var setQueryString = function(newQueryString) {
+    queryString = newQueryString;
+  };
+
+  var getQueryString = function() {
+    return queryString;
+  };
+
   return {
     setData: setData,
-    getData: getData
+    getData: getData,
+    setQueryString: setQueryString,
+    getQueryString: getQueryString
   };
 
 })
@@ -24,28 +35,29 @@ angular.module('starter.controllers', [])
 .controller('QueryCtrl', function($scope, $state, $stateParams, $http, $filter, dataService){
 
     $scope.params = $state.params;
+    dataService.setQueryString($scope.params.query);
 
     $scope.loading = true;
     $http.get("http://ams2.imilka.co/api/links/count?query="+$scope.params.query)
         .success(function (data, status, headers, config) {
-                dataService.setData(data);
-                console.log("data: " + data);
-                console.log("dsvc data: " + dataService.getData());
-                // $scope.data = $filter('filter')($scope.data, { wordLeft: {partOfSpeechShort:  } });
-                $scope.loading = false;
+                if($http.pendingRequests.length == 0) {
+                  dataService.setData(data);
+                  $scope.loading = false;
+                }
         })
         .error(function(){
+          if($http.pendingRequests.length == 0) {
             $scope.loading = false;
-        })
-
+          }
+        });
 
     $scope.getData = function() {
       return dataService.getData();
     }
 })
-.controller('MainCtrl', function($scope, $state, $stateParams, $location, $http, $filter){
+.controller('MainCtrl', function($scope, $state, $stateParams, $location, $http, $filter, dataService){
     $scope.countQuery = function(a){
-        if(a != undefined)
+        if(a != undefined && a.length > 2)
         $location.path('main/query/'+a);
     }
 
@@ -57,7 +69,9 @@ angular.module('starter.controllers', [])
 
     $scope.counter = 0;
 
-    $scope.queryString = ""
+    $scope.queryString = function() {
+      return dataService.getQueryString();
+    };
 
     $scope.wordLeftProperties = [
         {name: "Глагол", ticked: true  },
