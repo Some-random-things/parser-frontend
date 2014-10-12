@@ -6,9 +6,11 @@ angular.module('starter.controllers', [])
 .service('dataService', function() {
   var data = {};
   var queryString = "";
+  var loading = false;
 
   var setData = function(newData) {
     data = newData;
+    setLoading(false)
   };
 
   var getData = function() {
@@ -17,17 +19,28 @@ angular.module('starter.controllers', [])
 
   var setQueryString = function(newQueryString) {
     queryString = newQueryString;
+    setLoading(true)
   };
 
   var getQueryString = function() {
     return queryString;
   };
 
+  var isLoading = function() {
+    return loading;
+  }
+
+  var setLoading = function(newLoading) {
+    loading = newLoading;
+  }
+
   return {
     setData: setData,
     getData: getData,
     setQueryString: setQueryString,
-    getQueryString: getQueryString
+    getQueryString: getQueryString,
+    isLoading: isLoading,
+    setLoading: setLoading
   };
 
 })
@@ -38,17 +51,14 @@ angular.module('starter.controllers', [])
     dataService.setQueryString($scope.params.query);
 
     $scope.loading = true;
-    $http.get("http://ams2.imilka.co/api/links/count?query="+$scope.params.query)
+    $http.get("http://ams2.imilka.co/api/links?query="+$scope.params.query)
         .success(function (data, status, headers, config) {
-                if($http.pendingRequests.length == 0) {
-                  dataService.setData(data);
-                  $scope.loading = false;
+                if(dataService.getQueryString() == data.query) {
+                  dataService.setData(data.data);
                 }
         })
         .error(function(){
-          if($http.pendingRequests.length == 0) {
-            $scope.loading = false;
-          }
+          dataService.setLoading(false)
         });
 
     $scope.getData = function() {
@@ -71,6 +81,10 @@ angular.module('starter.controllers', [])
 
     $scope.queryString = function() {
       return dataService.getQueryString();
+    };
+
+    $scope.isLoading = function() {
+      return dataService.isLoading();
     };
 
     $scope.wordLeftProperties = [
