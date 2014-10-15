@@ -1,12 +1,15 @@
 /**
- * Created by Pavel on 07.10.14.
+ * Created by Pavel on 07.07.07.
  */
-angular.module('starter.controllers', [])
+angular.module('starter.controllers', ['multi-select'])
 
 .service('dataService', function() {
   var data = {};
   var queryString = "";
   var loading = false;
+
+  var leftSelectedProperties = [];
+  var rightSelectedProperties = [];
 
   var setData = function(newData) {
     data = newData;
@@ -28,11 +31,27 @@ angular.module('starter.controllers', [])
 
   var isLoading = function() {
     return loading;
-  }
+  };
 
   var setLoading = function(newLoading) {
     loading = newLoading;
-  }
+  };
+
+  var setLeftSelectedProperties = function(newLeftSelectedProperties) {
+    leftSelectedProperties = newLeftSelectedProperties;
+  };
+
+  var setRightSelectedProperties = function(newRightSelectedProperties) {
+    rightSelectedProperties = newRightSelectedProperties;
+  };
+
+  var getLeftSelectedProperties = function() {
+    return JSON.stringify(leftSelectedProperties);
+  };
+
+  var getRightSelectedProperties = function() {
+    return JSON.stringify(rightSelectedProperties);
+  };
 
   return {
     setData: setData,
@@ -40,7 +59,11 @@ angular.module('starter.controllers', [])
     setQueryString: setQueryString,
     getQueryString: getQueryString,
     isLoading: isLoading,
-    setLoading: setLoading
+    setLoading: setLoading,
+    getLeftSelectedProperties: getLeftSelectedProperties,
+    getRightSelectedProperties: getRightSelectedProperties,
+    setLeftSelectedProperties: setLeftSelectedProperties,
+    setRightSelectedProperties: setRightSelectedProperties
   };
 
 })
@@ -51,7 +74,10 @@ angular.module('starter.controllers', [])
     dataService.setQueryString($scope.params.query);
 
     $scope.loading = true;
-    $http.get("http://ams2.imilka.co/api/links?query="+$scope.params.query)
+    $http.get("http://ams2.imilka.co/api/links?" +
+        "query=" + $scope.params.query +
+        "&leftProperties=" + encodeURIComponent(dataService.getLeftSelectedProperties()) +
+        "&rightProperties=" + encodeURIComponent(dataService.getRightSelectedProperties()))
         .success(function (data, status, headers, config) {
                 if(dataService.getQueryString() == data.query) {
                   dataService.setData(data.data);
@@ -66,9 +92,16 @@ angular.module('starter.controllers', [])
     }
 })
 .controller('MainCtrl', function($scope, $state, $stateParams, $location, $http, $filter, dataService){
+
+    $scope.wordLeftSelectedProperties = [];
+    $scope.wordRightSelectedProperties = [];
+
     $scope.countQuery = function(a){
-        if(a != undefined && a.length > 2)
-        $location.path('main/query/'+a);
+      if(a != undefined && a.length > 2) {
+        dataService.setLeftSelectedProperties($scope.getWordSelectedProperties($scope.wordLeftSelectedProperties));
+        dataService.setRightSelectedProperties($scope.getWordSelectedProperties($scope.wordRightSelectedProperties));
+        $location.path('main/query/'+ a);
+      }
     }
 
     $scope.wordLeft = true;
@@ -88,20 +121,27 @@ angular.module('starter.controllers', [])
     };
 
     $scope.wordLeftProperties = [
-        {name: "Глагол", ticked: true  },
-        {name: "Существительное", ticked: true },
-        {name: "Прилагательное", ticked: true  },
-        {name: "Наречие", ticked: true },
-        {name: "Местоимение", ticked: true }
+      {handle: "V", name: "Глагол", ticked: true  },
+      {handle: "N", name: "Существительное", ticked: true },
+      {handle: "ADJ", name: "Прилагательное", ticked: true  },
+      {handle: "ADV", name: "Наречие", ticked: true },
+      {handle: "TRV", name: "Деепричастие", ticked: true }
     ];
     $scope.wordRightProperties = [
-        {name: "Глагол", ticked: true  },
-        {name: "Существительное", ticked: true },
-        {name: "Прилагательное", ticked: true  },
-        {name: "Наречие", ticked: true },
-        {name: "Местоимение", ticked: true }
+      {handle: "V", name: "Глагол", ticked: true  },
+      {handle: "N", name: "Существительное", ticked: true },
+      {handle: "ADJ", name: "Прилагательное", ticked: true  },
+      {handle: "ADV", name: "Наречие", ticked: true },
+      {handle: "TRV", name: "Деепричастие", ticked: true }
     ];
-    //массивы выбранных объектов в селекторах
-    $scope.wordLeftSelectedProperties = [];
-    $scope.wordRightSelectedProperties = [];
+
+    $scope.getWordSelectedProperties = function(selectedPropertiesObjects) {
+      var selectedPropertiesArray = [];
+      for(var i in selectedPropertiesObjects) {
+        if(selectedPropertiesObjects[i].ticked) {
+          selectedPropertiesArray.push(selectedPropertiesObjects[i].handle);
+        }
+      }
+      return selectedPropertiesArray;
+    }
 })
