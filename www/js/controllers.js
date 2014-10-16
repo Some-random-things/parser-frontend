@@ -46,11 +46,11 @@ angular.module('starter.controllers', ['multi-select'])
   };
 
   var getLeftSelectedProperties = function() {
-    return JSON.stringify(leftSelectedProperties);
+    return leftSelectedProperties.join(",");
   };
 
   var getRightSelectedProperties = function() {
-    return JSON.stringify(rightSelectedProperties);
+    return rightSelectedProperties.join(",");
   };
 
   return {
@@ -76,8 +76,8 @@ angular.module('starter.controllers', ['multi-select'])
     $scope.loading = true;
     $http.get("http://ams2.imilka.co/api/links?" +
         "query=" + $scope.params.query +
-        "&leftProperties=" + encodeURIComponent(dataService.getLeftSelectedProperties()) +
-        "&rightProperties=" + encodeURIComponent(dataService.getRightSelectedProperties()))
+        "&leftProperties=" + dataService.getLeftSelectedProperties() +
+        "&rightProperties=" + dataService.getRightSelectedProperties())
         .success(function (data, status, headers, config) {
                 if(dataService.getQueryString() == data.query) {
                   dataService.setData(data.data);
