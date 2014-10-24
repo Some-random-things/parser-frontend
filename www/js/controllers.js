@@ -3,7 +3,7 @@
  */
 angular.module('starter.controllers', ['multi-select'])
 
-.service('dataService', function() {
+.service('dataService', function($http) {
   var data = {};
   var queryString = "";
   var loading = false;
@@ -53,6 +53,21 @@ angular.module('starter.controllers', ['multi-select'])
     return rightSelectedProperties.join(",");
   };
 
+  var sendCountRequest = function(query){
+    $http.get("http://ams2.imilka.co/api/links?" +
+        "query=" + query +
+        "&leftProperties=" + getLeftSelectedProperties() +
+        "&rightProperties=" + getRightSelectedProperties())
+      .success(function (data, status, headers, config) {
+        if(getQueryString() == data.query) {
+          setData(data.data);
+        }
+      })
+      .error(function(){
+        setLoading(false)
+      });
+  }
+
   return {
     setData: setData,
     getData: getData,
@@ -63,85 +78,96 @@ angular.module('starter.controllers', ['multi-select'])
     getLeftSelectedProperties: getLeftSelectedProperties,
     getRightSelectedProperties: getRightSelectedProperties,
     setLeftSelectedProperties: setLeftSelectedProperties,
-    setRightSelectedProperties: setRightSelectedProperties
+    setRightSelectedProperties: setRightSelectedProperties,
+    sendCountRequest: sendCountRequest
   };
 
 })
 
-.controller('QueryCtrl', function($scope, $state, $stateParams, $http, $filter, dataService){
+.controller('QueryCtrl', function($scope, $state, $stateParams, $http, $filter, dataService, $timeout){
 
-    $scope.params = $state.params;
-    dataService.setQueryString($scope.params.query);
+  $scope.params = $state.params;
 
-    $scope.loading = true;
-    $http.get("http://ams2.imilka.co/api/links?" +
-        "query=" + $scope.params.query +
-        "&leftProperties=" + dataService.getLeftSelectedProperties() +
-        "&rightProperties=" + dataService.getRightSelectedProperties())
-        .success(function (data, status, headers, config) {
-                if(dataService.getQueryString() == data.query) {
-                  dataService.setData(data.data);
-                }
-        })
-        .error(function(){
-          dataService.setLoading(false)
-        });
+  dataService.setQueryString($scope.params.query);
 
-    $scope.getData = function() {
-      return dataService.getData();
-    }
+  $scope.loading = true;
+
+  $timeout(function(){
+    dataService.sendCountRequest($scope.params.query);
+  }, 200)
+
+
+  $scope.getData = function() {
+    return dataService.getData();
+  }
+
 })
-.controller('MainCtrl', function($scope, $state, $stateParams, $location, $http, $filter, dataService){
+.controller('MainCtrl', function($scope, $state, $stateParams, $location, $http, $filter, dataService, $timeout){
 
-    $scope.wordLeftSelectedProperties = [];
-    $scope.wordRightSelectedProperties = [];
+  $scope.wordLeftSelectedProperties = [];
+  $scope.wordRightSelectedProperties = [];
 
-    $scope.countQuery = function(a){
-      if(a != undefined && a.length > 2) {
-        dataService.setLeftSelectedProperties($scope.getWordSelectedProperties($scope.wordLeftSelectedProperties));
-        dataService.setRightSelectedProperties($scope.getWordSelectedProperties($scope.wordRightSelectedProperties));
-        $location.path('main/query/'+ a);
+
+
+  $scope.countQuery = function(a){
+    if(a != undefined && a.length > 2) {
+      dataService.setLeftSelectedProperties($scope.getWordSelectedProperties($scope.wordLeftSelectedProperties));
+      dataService.setRightSelectedProperties($scope.getWordSelectedProperties($scope.wordRightSelectedProperties));
+      $location.path('main/query/'+ a);
+    }
+  }
+
+  $scope.onClick = function(){
+    dataService.setLeftSelectedProperties($scope.getWordSelectedProperties($scope.wordLeftSelectedProperties));
+    dataService.setRightSelectedProperties($scope.getWordSelectedProperties($scope.wordRightSelectedProperties));
+    dataService.sendCountRequest(dataService.getQueryString());
+  }
+
+  $scope.wordLeft = true;
+  $scope.wordRight = true;
+  $scope.partOfSpeechLongLeft = true;
+  $scope.partOfSpeechLongRight = true;
+  $scope.count = true;
+
+  $scope.counter = 0;
+
+  $scope.queryString = function() {
+    return dataService.getQueryString();
+  };
+
+  $scope.isLoading = function() {
+    return dataService.isLoading();
+  };
+
+  $scope.wordLeftProperties = [
+    {handle: "V", name: "Глагол", ticked: true  },
+    {handle: "N", name: "Существительное", ticked: true },
+    {handle: "ADJ", name: "Прилагательное", ticked: true  },
+    {handle: "ADV", name: "Наречие", ticked: true },
+    {handle: "TRV", name: "Деепричастие", ticked: true }
+  ];
+  $scope.wordRightProperties = [
+    {handle: "V", name: "Глагол", ticked: true  },
+    {handle: "N", name: "Существительное", ticked: true },
+    {handle: "ADJ", name: "Прилагательное", ticked: true  },
+    {handle: "ADV", name: "Наречие", ticked: true },
+    {handle: "TRV", name: "Деепричастие", ticked: true }
+  ];
+
+  $scope.getWordSelectedProperties = function(selectedPropertiesObjects) {
+    var selectedPropertiesArray = [];
+    for(var i in selectedPropertiesObjects) {
+      if(selectedPropertiesObjects[i].ticked) {
+        selectedPropertiesArray.push(selectedPropertiesObjects[i].handle);
       }
     }
+    return selectedPropertiesArray;
+  }
 
-    $scope.wordLeft = true;
-    $scope.wordRight = true;
-    $scope.partOfSpeechLongLeft = true;
-    $scope.partOfSpeechLongRight = true;
-    $scope.count = true;
+  $timeout(function(){
+    dataService.setLeftSelectedProperties($scope.getWordSelectedProperties($scope.wordLeftSelectedProperties));
+    dataService.setRightSelectedProperties($scope.getWordSelectedProperties($scope.wordRightSelectedProperties));
+  }, 100)
 
-    $scope.counter = 0;
 
-    $scope.queryString = function() {
-      return dataService.getQueryString();
-    };
-
-    $scope.isLoading = function() {
-      return dataService.isLoading();
-    };
-
-    $scope.wordLeftProperties = [
-      {handle: "V", name: "Глагол", ticked: true  },
-      {handle: "N", name: "Существительное", ticked: true },
-      {handle: "ADJ", name: "Прилагательное", ticked: true  },
-      {handle: "ADV", name: "Наречие", ticked: true },
-      {handle: "TRV", name: "Деепричастие", ticked: true }
-    ];
-    $scope.wordRightProperties = [
-      {handle: "V", name: "Глагол", ticked: true  },
-      {handle: "N", name: "Существительное", ticked: true },
-      {handle: "ADJ", name: "Прилагательное", ticked: true  },
-      {handle: "ADV", name: "Наречие", ticked: true },
-      {handle: "TRV", name: "Деепричастие", ticked: true }
-    ];
-
-    $scope.getWordSelectedProperties = function(selectedPropertiesObjects) {
-      var selectedPropertiesArray = [];
-      for(var i in selectedPropertiesObjects) {
-        if(selectedPropertiesObjects[i].ticked) {
-          selectedPropertiesArray.push(selectedPropertiesObjects[i].handle);
-        }
-      }
-      return selectedPropertiesArray;
-    }
 })
