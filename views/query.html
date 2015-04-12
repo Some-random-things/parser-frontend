@@ -14,7 +14,7 @@
     <th>Кол-во связей</th>
   </thead>
   <tbody>
-    <tr ng-repeat="link in getData()">
+    <tr ng-repeat="link in getData() | filter: rightWordFilter">
       <td>{{link.wordLeft.word}}</td>
       <td>{{link.wordLeft.partOfSpeechLong}}</td>
       <td>{{link.wordRight.word}}</td>

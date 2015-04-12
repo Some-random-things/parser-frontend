@@ -96,6 +96,32 @@ angular.module('starter.controllers', ['multi-select'])
     dataService.sendCountRequest($scope.params.query);
   }, 200)
 
+    $scope.objects = [
+        {
+            wordLeft:{
+                word: 'АБОНИРОВАТЬ'
+            },
+            wordRight:{
+                word: 'АБОНЕМЕНТ'
+            }
+        },
+        {
+            wordLeft:{
+                word: 'АБОНИРОВАТЬ'
+            },
+            wordRight:{
+                word: 'БИБЛИОТЕКА'
+            }
+        },
+        {
+            wordLeft:{
+                word: 'АБОНИРОВАТЬ'
+            },
+            wordRight:{
+                word: 'БУЛОЧКА'
+            }
+        }
+    ]
 
   $scope.getData = function() {
     return dataService.getData();
@@ -106,8 +132,6 @@ angular.module('starter.controllers', ['multi-select'])
 
   $scope.wordLeftSelectedProperties = [];
   $scope.wordRightSelectedProperties = [];
-
-
 
   $scope.countQuery = function(a){
     if(a != undefined && a.length > 2) {
@@ -138,6 +162,11 @@ angular.module('starter.controllers', ['multi-select'])
   $scope.isLoading = function() {
     return dataService.isLoading();
   };
+
+  $scope.rightWordFilter = function(actual){
+      if($scope.queryRightFilter == null) return true;
+      return actual.wordRight.word.indexOf($scope.queryRightFilter) > -1;
+  }
 
   $scope.wordLeftProperties = [
     {handle: "V", name: "Глагол", ticked: true  },

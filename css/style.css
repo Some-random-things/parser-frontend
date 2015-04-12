@@ -79,9 +79,10 @@ body, html {
   margin-top:30px;
 }
 
-.search-query input {
+.search-query input, .search-query div {
   font-size:22px;
   height:50px;
+  line-height: 40px;
 }
 
 .params-layout-jumbotron {
@@ -89,7 +90,7 @@ body, html {
 }
 
 .params-layout {
-  height:180px;
+  height:280px;
 }
 
 .loadinggif {

@@ -1,80 +1,100 @@
 <div class="jumbotron params-layout-jumbotron">
-  <div class="container params-layout">
-    <div class="row">
-      <div class="col-md-6 search-query">
-          <input ng-change="countQuery(queryString)" type="text" ng-class="{loadinggif: isLoading() == true}" class="form-control search-query" placeholder="Query" name="queryString" ng-init="getQueryString()" ng-bind="queryString" ng-model="queryString"> <!--ng-change="sendQuery(queryString)" -->
-      </div>
-      <div class="col-md-3 params-selector">
+    <div class="container params-layout">
         <div class="row">
-          <label class="form-control">
-            Часть речи(Л)
-          </label>
-        </div>
-        <div class="row">
-          <div
-              multi-select
-              input-model="wordLeftProperties"
-              output-model="wordLeftSelectedProperties"
-              button-label="name"
-              default-label="Ничего не выбрано"
-              item-label="icon name maker"
-              tick-property="ticked"
-              class="width"
-              helper-elements="all none reset"
-              on-item-click="onClick()"
-              >
-          </div>
-        </div>
-      </div>
-      <div class="col-md-3 params-selector">
-        <div class="row">
-          <label class="form-control">
-            Часть речи(П)
-          </label>
-        </div>
-        <div class="row">
-          <div
-              multi-select
-              output-model="wordRightSelectedProperties"
-              input-model="wordRightProperties"
-              button-label="name"
-              default-label="Ничего не выбрано"
-              item-label="icon name maker"
-              tick-property="ticked"
-              class="width"
-              helper-elements="all none reset"
-              on-item-click="onClick()"
-              >
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
 
-<div class="container">
-  <div class="row">
-    <div class="col-md-12">
-      <div ui-view="query">
-    </div>
-  </div>
-</div>
+            <div class="col-md-4 search-query col-md-offset-1">
+                <input  ng-change="countQuery(queryString)" type="text" ng-class="{loadinggif: isLoading() == true}" class="form-control search-query" placeholder="Левое слово" name="queryString"  ng-init="getQueryString()" ng-bind="queryString" ng-model="queryString"> <!--ng-change="sendQuery(queryString)" -->
+            </div>
 
-      <!--  <div class="col-md-1">
-            <button class="btn btn-black btn-function" ng-click="countQuery(queryString)">
-                Count
-            </button>
-        </div>
+            <div class="col-md-2 search-query">
+                <input type="text" ng-class="{loadinggif: isLoading() == true}" class="form-control search-query" placeholder="предлог" name="queryPreposition"  ng-model="queryPreposition"> <!--ng-change="sendQuery(queryString)" -->
+            </div>
 
-        <div class="col-md-1">
+            <div class="col-md-4 search-query">
+                <input type="text" ng-class="{loadinggif: isLoading() == true}" class="form-control search-query" placeholder="" ng-model="queryRightFilter"> <!--ng-change="sendQuery(queryString)" -->
+            </div>
 
-        </div>
-
-
-        <div class="col-md-7">
-            <div ui-view="query">
+            <div class="col-md-1 search-query">
+                <div class="btn btn-default form-control search-query" type="button" value="" ng-click="countQuery(queryString)">
+                    <i class="glyphicon glyphicon-search"></i>
+                </div>
             </div>
         </div>
 
-    </div>-->
+        <div class="row">
+            <div class="col-md-3 params-selector col-md-offset-3">
+                <div class="row">
+                    <label class="form-control">
+                        Часть речи(Л)
+                    </label>
+                </div>
+                <div class="row">
+                    <div
+                            multi-select
+                            input-model="wordLeftProperties"
+                            output-model="wordLeftSelectedProperties"
+                            button-label="name"
+                            default-label="Ничего не выбрано"
+                            item-label="icon name maker"
+                            tick-property="ticked"
+                            class="width"
+                            helper-elements="all none reset"
+                            on-item-click="onClick()"
+                            >
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 params-selector">
+                <div class="row">
+                    <label class="form-control">
+                        Часть речи(П)
+                    </label>
+                </div>
+                <div class="row">
+                    <div
+                            multi-select
+                            output-model="wordRightSelectedProperties"
+                            input-model="wordRightProperties"
+                            button-label="name"
+                            default-label="Ничего не выбрано"
+                            item-label="icon name maker"
+                            tick-property="ticked"
+                            class="width"
+                            helper-elements="all none reset"
+                            on-item-click="onClick()"
+                            >
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div ui-view="query">
+            </div>
+        </div>
+    </div>
+
+    <!--  <div class="col-md-1">
+          <button class="btn btn-black btn-function" ng-click="countQuery(queryString)">
+              Count
+          </button>
+      </div>
+
+      <div class="col-md-1">
+
+      </div>
+
+
+      <div class="col-md-7">
+          <div ui-view="query">
+          </div>
+      </div>
+
+  </div>-->
 </div>
