@@ -3,200 +3,239 @@
  */
 angular.module('starter.controllers', ['multi-select'])
 
-.service('dataService', function($http) {
-  var data = {};
-  var queryString = "";
-  var loading = false;
+    .service('dataService', function($http, $q) {
+        var data = {};
+        var queryStringLeft = "";
+        var queryStringRight = "";
+        var queryPreposition = "";
 
-  var leftSelectedProperties = [];
-  var rightSelectedProperties = [];
+        var errorObjects = [
+            {
+                wordLeft:{
+                    word: 'АБОНИРОВАТЬ'
+                },
+                wordRight:{
+                    word: 'АБОНЕМЕНТ'
+                }
+            },
+            {
+                wordLeft:{
+                    word: 'АБОНИРОВАТЬ'
+                },
+                preposition: 'В',
+                wordRight:{
+                    word: 'БИБЛИОТЕКА'
+                }
+            },
+            {
+                wordLeft:{
+                    word: 'АБОНИРОВАТЬ'
+                },
+                wordRight:{
+                    word: 'БУЛОЧКА'
+                }
+            }
+        ]
 
-  var setData = function(newData) {
-    data = newData;
-    setLoading(false)
-  };
+        var leftSelectedProperties = [];
+        var rightSelectedProperties = [];
 
-  var getData = function() {
-    return data;
-  };
+        var setData = function(newData) {
+            data = newData;
+        };
 
-  var setQueryString = function(newQueryString) {
-    queryString = newQueryString;
-    setLoading(true)
-  };
+        var getData = function() {
+            return data;
+        };
 
-  var getQueryString = function() {
-    return queryString;
-  };
+        var setQueryStringLeft = function(newQueryStringLeft) {
+            queryStringLeft = newQueryStringLeft;
+        };
 
-  var isLoading = function() {
-    return loading;
-  };
+        var getQueryStringLeft = function() {
+            return queryStringLeft;
+        };
 
-  var setLoading = function(newLoading) {
-    loading = newLoading;
-  };
+        var setQueryPreposition = function(newQueryPreposition) {
+            queryPreposition = newQueryPreposition;
+        };
 
-  var setLeftSelectedProperties = function(newLeftSelectedProperties) {
-    leftSelectedProperties = newLeftSelectedProperties;
-  };
+        var getQueryPreposition = function() {
+            return queryPreposition;
+        };
 
-  var setRightSelectedProperties = function(newRightSelectedProperties) {
-    rightSelectedProperties = newRightSelectedProperties;
-  };
+        var setQueryStringRight = function(newQueryStringRight) {
+            queryStringRight = newQueryStringRight;
+        };
 
-  var getLeftSelectedProperties = function() {
-    return leftSelectedProperties.join(",");
-  };
+        var getQueryStringRight = function() {
+            return queryStringRight;
+        };
 
-  var getRightSelectedProperties = function() {
-    return rightSelectedProperties.join(",");
-  };
+        var setLeftSelectedProperties = function(newLeftSelectedProperties) {
+            leftSelectedProperties = newLeftSelectedProperties;
+        };
 
-  var sendCountRequest = function(query){
-    $http.get("http://ams2.imilka.co/api/links?" +
-        "query=" + query +
-        "&leftProperties=" + getLeftSelectedProperties() +
-        "&rightProperties=" + getRightSelectedProperties())
-      .success(function (data, status, headers, config) {
-        if(getQueryString() == data.query) {
-          setData(data.data);
+        var setRightSelectedProperties = function(newRightSelectedProperties) {
+            rightSelectedProperties = newRightSelectedProperties;
+        };
+
+        var getLeftSelectedProperties = function() {
+            return leftSelectedProperties.join(",");
+        };
+
+        var getRightSelectedProperties = function() {
+            return rightSelectedProperties.join(",");
+        };
+
+        var sendCountRequest = function(){
+            var url = "http://ams2.imilka.co/api/links?";
+            var params = "";
+            var deferred = $q.defer();
+            var paramsObject = {
+                leftWord: getQueryStringLeft(),
+                rightWord: getQueryStringRight(),
+                preposition: getQueryPreposition(),
+                leftProperties: getLeftSelectedProperties(),
+                rightProperties: getRightSelectedProperties()
+            }
+            for (var key in paramsObject) {
+                if (params != "") {
+                    params += "&";
+                }
+                params += key + "=" + encodeURIComponent(paramsObject[key]);
+            }
+            $http.get(url + params)
+                .success(function (data, status, headers, config) {
+                    //TODO тут сделать проверку с нвоым апи
+                    //if(getQueryStringLeft() == data.query) {
+                        deferred.resolve(data.data);
+                    //}
+                })
+                .error(function(){
+                    deferred.reject(errorObjects);
+                });
+
+            return deferred.promise;
         }
-      })
-      .error(function(){
-        setLoading(false)
-      });
-  }
 
-  return {
-    setData: setData,
-    getData: getData,
-    setQueryString: setQueryString,
-    getQueryString: getQueryString,
-    isLoading: isLoading,
-    setLoading: setLoading,
-    getLeftSelectedProperties: getLeftSelectedProperties,
-    getRightSelectedProperties: getRightSelectedProperties,
-    setLeftSelectedProperties: setLeftSelectedProperties,
-    setRightSelectedProperties: setRightSelectedProperties,
-    sendCountRequest: sendCountRequest
-  };
+        return {
+            setData: setData,
+            getData: getData,
+            setQueryStringLeft: setQueryStringLeft,
+            setQueryStringRight: setQueryStringRight,
+            getQueryStringLeft: getQueryStringLeft,
+            getQueryStringRight: getQueryStringRight,
+            setQueryPreposition: setQueryPreposition,
+            getQueryPreposition: getQueryPreposition,
+            getLeftSelectedProperties: getLeftSelectedProperties,
+            getRightSelectedProperties: getRightSelectedProperties,
+            setLeftSelectedProperties: setLeftSelectedProperties,
+            setRightSelectedProperties: setRightSelectedProperties,
+            sendCountRequest: sendCountRequest
+        };
 
-})
+    })
 
-.controller('QueryCtrl', function($scope, $state, $stateParams, $http, $filter, dataService, $timeout){
+    .controller('MainCtrl', function($scope, $state, $stateParams, $location, $http, $filter, dataService, $timeout){
 
-  $scope.params = $state.params;
-
-  dataService.setQueryString($scope.params.query);
-
-  $scope.loading = true;
-
-  $timeout(function(){
-    dataService.sendCountRequest($scope.params.query);
-  }, 200)
-
-    $scope.objects = [
-        {
-            wordLeft:{
-                word: 'АБОНИРОВАТЬ'
-            },
-            wordRight:{
-                word: 'АБОНЕМЕНТ'
-            }
-        },
-        {
-            wordLeft:{
-                word: 'АБОНИРОВАТЬ'
-            },
-            wordRight:{
-                word: 'БИБЛИОТЕКА'
-            }
-        },
-        {
-            wordLeft:{
-                word: 'АБОНИРОВАТЬ'
-            },
-            wordRight:{
-                word: 'БУЛОЧКА'
-            }
+        $scope.params = {
+            leftWord: $location.search()['leftWord'] || null,
+            rightWord: $location.search()['rightWord'] || null,
+            preposition: $location.search()['preposition'] || null,
         }
-    ]
 
-  $scope.getData = function() {
-    return dataService.getData();
-  }
+        $scope.wordLeftSelectedProperties = [];
+        $scope.wordRightSelectedProperties = [];
 
-})
-.controller('MainCtrl', function($scope, $state, $stateParams, $location, $http, $filter, dataService, $timeout){
+        $scope.countQuery = function(){
+            //TODO заменить
+            //if(a != undefined && a.length > 2) {
+                $scope.loading = true;
+                $scope.setParams();
+                dataService.setLeftSelectedProperties($scope.getWordSelectedProperties($scope.wordLeftSelectedProperties));
+                dataService.setRightSelectedProperties($scope.getWordSelectedProperties($scope.wordRightSelectedProperties));
+                dataService.sendCountRequest($scope.params.leftWord, $scope.params.rightWord, $scope.params.preposition).then(function(data){
+                    $scope.loading = false;
+                    $scope.data = data;
+                    $scope.prepositionsExist = _.filter($scope.data, function(element){
+                        return element.preposition != null
+                    }).length > 0;
+                }, function(errorData){
+                    $scope.loading = false;
+                    $scope.data = errorData;
+                    $scope.prepositionsExist = _.filter($scope.data, function(element){
+                        return element.preposition != null
+                    }).length > 0;
+                })
+                $location.search({
+                    'leftWord': ($scope.params.leftWord) ? $scope.params.leftWord : null,
+                    'rightWord': ($scope.params.rightWord) ? $scope.params.rightWord : null,
+                    'preposition': ($scope.params.preposition) ? $scope.params.preposition : null,
+                });
+           // }
+        }
 
-  $scope.wordLeftSelectedProperties = [];
-  $scope.wordRightSelectedProperties = [];
+        $scope.onClick = function(){
+            dataService.setLeftSelectedProperties($scope.getWordSelectedProperties($scope.wordLeftSelectedProperties));
+            dataService.setRightSelectedProperties($scope.getWordSelectedProperties($scope.wordRightSelectedProperties));
+            dataService.sendCountRequest(
+                dataService.getQueryStringLeft(),
+                dataService.getQueryStringRight(),
+                dataService.getQueryPreposition()
+            );
+        }
 
-  $scope.countQuery = function(a){
-    if(a != undefined && a.length > 2) {
-      dataService.setLeftSelectedProperties($scope.getWordSelectedProperties($scope.wordLeftSelectedProperties));
-      dataService.setRightSelectedProperties($scope.getWordSelectedProperties($scope.wordRightSelectedProperties));
-      $location.path('main/query/'+ a);
-    }
-  }
+        $scope.wordLeft = true;
+        $scope.wordRight = true;
+        $scope.partOfSpeechLongLeft = true;
+        $scope.partOfSpeechLongRight = true;
+        $scope.count = true;
+        $scope.counter = 0;
 
-  $scope.onClick = function(){
-    dataService.setLeftSelectedProperties($scope.getWordSelectedProperties($scope.wordLeftSelectedProperties));
-    dataService.setRightSelectedProperties($scope.getWordSelectedProperties($scope.wordRightSelectedProperties));
-    dataService.sendCountRequest(dataService.getQueryString());
-  }
+        $scope.rightWordFilter = function(actual){
+            return true;
+        }
 
-  $scope.wordLeft = true;
-  $scope.wordRight = true;
-  $scope.partOfSpeechLongLeft = true;
-  $scope.partOfSpeechLongRight = true;
-  $scope.count = true;
+        $scope.setParams = function(){
+            dataService.setQueryStringLeft($scope.params.leftWord);
+            dataService.setQueryStringRight($scope.params.rightWord);
+            dataService.setQueryPreposition($scope.params.preposition);
+        }
 
-  $scope.counter = 0;
+        $scope.wordLeftProperties = [
+            {handle: "V", name: "Глагол", ticked: true  },
+            {handle: "N", name: "Существительное", ticked: true },
+            {handle: "ADJ", name: "Прилагательное", ticked: true  },
+            {handle: "ADV", name: "Наречие", ticked: true },
+            {handle: "TRV", name: "Деепричастие", ticked: true }
+        ];
 
-  $scope.queryString = function() {
-    return dataService.getQueryString();
-  };
+        $scope.wordRightProperties = [
+            {handle: "V", name: "Глагол", ticked: true  },
+            {handle: "N", name: "Существительное", ticked: true },
+            {handle: "ADJ", name: "Прилагательное", ticked: true  },
+            {handle: "ADV", name: "Наречие", ticked: true },
+            {handle: "TRV", name: "Деепричастие", ticked: true }
+        ];
 
-  $scope.isLoading = function() {
-    return dataService.isLoading();
-  };
+        $scope.getWordSelectedProperties = function(selectedPropertiesObjects) {
+            var selectedPropertiesArray = [];
+            for(var i in selectedPropertiesObjects) {
+                if(selectedPropertiesObjects[i].ticked) {
+                    selectedPropertiesArray.push(selectedPropertiesObjects[i].handle);
+                }
+            }
+            return selectedPropertiesArray;
+        }
 
-  $scope.rightWordFilter = function(actual){
-      if($scope.queryRightFilter == null) return true;
-      return actual.wordRight.word.indexOf($scope.queryRightFilter) > -1;
-  }
-
-  $scope.wordLeftProperties = [
-    {handle: "V", name: "Глагол", ticked: true  },
-    {handle: "N", name: "Существительное", ticked: true },
-    {handle: "ADJ", name: "Прилагательное", ticked: true  },
-    {handle: "ADV", name: "Наречие", ticked: true },
-    {handle: "TRV", name: "Деепричастие", ticked: true }
-  ];
-  $scope.wordRightProperties = [
-    {handle: "V", name: "Глагол", ticked: true  },
-    {handle: "N", name: "Существительное", ticked: true },
-    {handle: "ADJ", name: "Прилагательное", ticked: true  },
-    {handle: "ADV", name: "Наречие", ticked: true },
-    {handle: "TRV", name: "Деепричастие", ticked: true }
-  ];
-
-  $scope.getWordSelectedProperties = function(selectedPropertiesObjects) {
-    var selectedPropertiesArray = [];
-    for(var i in selectedPropertiesObjects) {
-      if(selectedPropertiesObjects[i].ticked) {
-        selectedPropertiesArray.push(selectedPropertiesObjects[i].handle);
-      }
-    }
-    return selectedPropertiesArray;
-  }
-
-  $timeout(function(){
-    dataService.setLeftSelectedProperties($scope.getWordSelectedProperties($scope.wordLeftSelectedProperties));
-    dataService.setRightSelectedProperties($scope.getWordSelectedProperties($scope.wordRightSelectedProperties));
-  }, 100)
+        //initial request
+        $timeout(function(){
+            dataService.setLeftSelectedProperties($scope.getWordSelectedProperties($scope.wordLeftSelectedProperties));
+            dataService.setRightSelectedProperties($scope.getWordSelectedProperties($scope.wordRightSelectedProperties));
+            $scope.countQuery();
+        }, 100)
 
 
-})
+
+    })

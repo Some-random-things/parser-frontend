@@ -5,40 +5,22 @@
 // the 2nd parameter is an array of 'requires'
 angular.module('starter', ['starter.controllers', 'multi-select', 'ui.router'])
 
-.config(function($stateProvider, $urlRouterProvider){
-        $stateProvider
-            .state('main', {
-                url: '/main',
-                templateUrl: "views/main.html",
-                controller: 'MainCtrl'
-            })
-            .state('main.query', {
-                url: '/query/:query',
-                views:{
-                    'query' :{
-                        templateUrl: 'views/query.html',
-                        controller: 'QueryCtrl'
-                    }
-                }
-            })
-            .state('main.list', {
-                url: '/list',
-                templateUrl: 'views/partial-home-list.html',
-                controller: function($scope) {
-                    $scope.dogs = ['Bernese', 'Husky', 'Goldendoodle'];
-                }
-            })
-        $urlRouterProvider.otherwise('/main');
-})
+    .config(function($stateProvider, $urlRouterProvider){
+            $stateProvider
+                .state('main', {
+                    url: '/main',
+                    templateUrl: "views/main.html",
+                    controller: 'MainCtrl'
+                })
+            $urlRouterProvider.otherwise('/main');
+    })
     .config(['$httpProvider', function($httpProvider) {
-        $httpProvider.defaults.useXDomain = true;
-        $httpProvider.defaults.withCredentials = true;
-        delete $httpProvider.defaults.headers.common["X-Requested-With"];
-        $httpProvider.defaults.headers.common["Accept"] = "application/json";
-        $httpProvider.defaults.headers.common["Content-Type"] = "application/json";
-    }
-    ])
-
+            $httpProvider.defaults.useXDomain = true;
+            $httpProvider.defaults.withCredentials = true;
+            delete $httpProvider.defaults.headers.common["X-Requested-With"];
+            $httpProvider.defaults.headers.common["Accept"] = "application/json";
+            $httpProvider.defaults.headers.common["Content-Type"] = "application/json";
+    }])
 
     .directive('ngModelOnblur', function() {
         return {

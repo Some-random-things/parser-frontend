@@ -3,19 +3,19 @@
         <div class="row">
 
             <div class="col-md-4 search-query col-md-offset-1">
-                <input  ng-change="countQuery(queryString)" type="text" ng-class="{loadinggif: isLoading() == true}" class="form-control search-query" placeholder="Левое слово" name="queryString"  ng-init="getQueryString()" ng-bind="queryString" ng-model="queryString"> <!--ng-change="sendQuery(queryString)" -->
+                <input type="text" ng-class="{loadinggif: loading === true}" class="form-control search-query" placeholder="Левое слово" name="queryStringLeft" ng-model="params.leftWord"> <!--ng-change="sendQuery(queryString)" -->
             </div>
 
             <div class="col-md-2 search-query">
-                <input type="text" ng-class="{loadinggif: isLoading() == true}" class="form-control search-query" placeholder="предлог" name="queryPreposition"  ng-model="queryPreposition"> <!--ng-change="sendQuery(queryString)" -->
+                <input type="text" ng-class="{loadinggif: loading === true}" class="form-control search-query" placeholder="предлог" name="queryPreposition" ng-model="params.preposition"> <!--ng-change="sendQuery(queryString)" -->
             </div>
 
             <div class="col-md-4 search-query">
-                <input type="text" ng-class="{loadinggif: isLoading() == true}" class="form-control search-query" placeholder="" ng-model="queryRightFilter"> <!--ng-change="sendQuery(queryString)" -->
+                <input type="text" ng-class="{loadinggif: loading === true}" class="form-control search-query" placeholder="Правое слово" name="queryStringRight" ng-model="params.rightWord"> <!--ng-change="sendQuery(queryString)" -->
             </div>
 
             <div class="col-md-1 search-query">
-                <div class="btn btn-default form-control search-query" type="button" value="" ng-click="countQuery(queryString)">
+                <div class="btn btn-default form-control search-query" type="button" value="" ng-click="countQuery(queryStringLeft, queryStringRight)">
                     <i class="glyphicon glyphicon-search"></i>
                 </div>
             </div>
@@ -75,26 +75,26 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <div ui-view="query">
-            </div>
+            <table class="table table-bordered table-striped table-hover table-condensed">
+                <thead>
+                <th>Левое слово</th>
+                <th>Часть речи(Л)</th>
+                <th ng-if="prepositionsExist">Предлог</th>
+                <th>Правое слово</th>
+                <th>Часть речи(П)</th>
+                <th>Кол-во связей</th>
+                </thead>
+                <tbody>
+                <tr ng-repeat="link in data">
+                    <td>{{link.wordLeft.word}}</td>
+                    <td>{{link.wordLeft.partOfSpeechLong}}</td>
+                    <td ng-if="prepositionsExist">{{link.preposition}}</td>
+                    <td>{{link.wordRight.word}}</td>
+                    <td>{{link.wordRight.partOfSpeechLong}}</td>
+                    <td>{{link.count}}</td>
+                </tr>
+                </tbody>
+            </table>
         </div>
     </div>
-
-    <!--  <div class="col-md-1">
-          <button class="btn btn-black btn-function" ng-click="countQuery(queryString)">
-              Count
-          </button>
-      </div>
-
-      <div class="col-md-1">
-
-      </div>
-
-
-      <div class="col-md-7">
-          <div ui-view="query">
-          </div>
-      </div>
-
-  </div>-->
 </div>
