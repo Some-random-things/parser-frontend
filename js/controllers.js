@@ -106,7 +106,7 @@ angular.module('starter.controllers', ['multi-select'])
         };
 
         var sendCountRequest = function(){
-            var url = "http://ams2.imilka.co/api/links?";
+            var url = "http://ams2.imilka.co/linksapi/public/links?";
             var params = "";
             var deferred = $q.defer();
             var paramsObject = {
