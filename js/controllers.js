@@ -8,7 +8,8 @@ angular.module('starter.controllers', ['multi-select'])
         var queryStringLeft = "";
         var queryStringRight = "";
         var queryPreposition = "";
-
+        var leftWordExactMatch = false;
+        var rightWordExactMatch = false;
         var errorObjects = [
             {
                 wordLeft:{
@@ -71,7 +72,23 @@ angular.module('starter.controllers', ['multi-select'])
         var getQueryStringRight = function() {
             return queryStringRight;
         };
+        
+        var setLeftWordExactMatch = function(newLeftWordExactMatch) {
+            leftWordExactMatch = newLeftWordExactMatch;
+        };
 
+        var getLeftWordExactMatch = function() {
+            return leftWordExactMatch;
+        };
+
+        var setRightWordExactMatch = function(newRightWordExactMatch) {
+            rightWordExactMatch = newRightWordExactMatch;
+        };
+
+        var getRightWordExactMatch = function() {
+            return rightWordExactMatch;
+        };
+        
         var setLeftSelectedProperties = function(newLeftSelectedProperties) {
             leftSelectedProperties = newLeftSelectedProperties;
         };
@@ -97,7 +114,9 @@ angular.module('starter.controllers', ['multi-select'])
                 rightWord: getQueryStringRight(),
                 preposition: getQueryPreposition(),
                 leftProperties: getLeftSelectedProperties(),
-                rightProperties: getRightSelectedProperties()
+                rightProperties: getRightSelectedProperties(),
+                leftWordExactMatch: getLeftWordExactMatch(),
+                rightWordExactMatch: getRightWordExactMatch()
             }
             for (var key in paramsObject) {
                 if (params != "") {
@@ -128,6 +147,10 @@ angular.module('starter.controllers', ['multi-select'])
             getQueryStringRight: getQueryStringRight,
             setQueryPreposition: setQueryPreposition,
             getQueryPreposition: getQueryPreposition,
+            getRightWordExactMatch: getRightWordExactMatch,
+            getLeftWordExactMatch: getLeftWordExactMatch,
+            setRightWordExactMatch: setRightWordExactMatch,
+            setLeftWordExactMatch: setLeftWordExactMatch,
             getLeftSelectedProperties: getLeftSelectedProperties,
             getRightSelectedProperties: getRightSelectedProperties,
             setLeftSelectedProperties: setLeftSelectedProperties,
@@ -143,6 +166,8 @@ angular.module('starter.controllers', ['multi-select'])
             leftWord: $location.search()['leftWord'] || null,
             rightWord: $location.search()['rightWord'] || null,
             preposition: $location.search()['preposition'] || null,
+            leftWordExactMatch: $location.search()['leftWordExactMatch'] || false,
+            rightWordExactMatch: $location.search()['rightWordExactMatch'] || false
         }
 
         $scope.wordLeftSelectedProperties = [];
@@ -172,11 +197,15 @@ angular.module('starter.controllers', ['multi-select'])
                     'leftWord': ($scope.params.leftWord) ? $scope.params.leftWord : null,
                     'rightWord': ($scope.params.rightWord) ? $scope.params.rightWord : null,
                     'preposition': ($scope.params.preposition) ? $scope.params.preposition : null,
+                    'leftWordExactMatch': ($scope.params.leftWordExactMatch) ? $scope.params.leftWordExactMatch : null,
+                    'rightWordExactMatch': ($scope.params.rightWordExactMatch) ? $scope.params.rightWordExactMatch : null
                 });
            // }
         }
 
         $scope.onClick = function(){
+            dataService.setLeftWordExactMatch($scope.params.leftWordExactMatch);
+            dataService.setRightWordExactMatch($scope.params.rightWordExactMatch);
             dataService.setLeftSelectedProperties($scope.getWordSelectedProperties($scope.wordLeftSelectedProperties));
             dataService.setRightSelectedProperties($scope.getWordSelectedProperties($scope.wordRightSelectedProperties));
             dataService.sendCountRequest(
@@ -198,6 +227,8 @@ angular.module('starter.controllers', ['multi-select'])
         }
 
         $scope.setParams = function(){
+            dataService.setLeftWordExactMatch($scope.params.leftWordExactMatch);
+            dataService.setRightWordExactMatch($scope.params.rightWordExactMatch);
             dataService.setQueryStringLeft($scope.params.leftWord);
             dataService.setQueryStringRight($scope.params.rightWord);
             dataService.setQueryPreposition($scope.params.preposition);

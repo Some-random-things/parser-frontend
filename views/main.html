@@ -2,19 +2,37 @@
     <div class="container params-layout">
         <div class="row">
 
-            <div class="col-md-4 search-query col-md-offset-1">
-                <input type="text" ng-class="{loadinggif: loading === true}" class="form-control search-query" placeholder="Левое слово" name="queryStringLeft" ng-model="params.leftWord"> <!--ng-change="sendQuery(queryString)" -->
+            <div class="col-md-4 col-md-offset-1 same-height-col" style="margin-top: 30px">
+                <div class="form-group search-query">
+                    <input type="text" ng-class="{loadinggif: loading === true}" class="form-control search-query" placeholder="Левое слово" name="queryStringLeft" ng-model="params.leftWord">
+                </div><!--ng-change="sendQuery(queryString)" -->
+                <div>
+                    <div class="checkbox" style="float: left;">
+                        <label>
+                            <input type="checkbox" ng-model="params.leftWordExactMatch"> точное совпадение
+                        </label>
+                    </div>
+                </div>
             </div>
 
-            <div class="col-md-2 search-query">
+            <div class="col-md-2 search-query same-height-col">
                 <input type="text" ng-class="{loadinggif: loading === true}" class="form-control search-query" placeholder="предлог" name="queryPreposition" ng-model="params.preposition"> <!--ng-change="sendQuery(queryString)" -->
             </div>
 
-            <div class="col-md-4 search-query">
-                <input type="text" ng-class="{loadinggif: loading === true}" class="form-control search-query" placeholder="Правое слово" name="queryStringRight" ng-model="params.rightWord"> <!--ng-change="sendQuery(queryString)" -->
+            <div class="col-md-4 same-height-col" style="margin-top: 30px">
+                <div class="form-group search-query">
+                    <input type="text" ng-class="{loadinggif: loading === true}" class="form-control search-query" placeholder="Правое слово" name="queryStringRight" ng-model="params.rightWord"> <!--ng-change="sendQuery(queryString)" -->
+                </div>
+                <div style="float: right;">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" ng-model="params.rightWordExactMatch"> точное совпадение
+                        </label>
+                    </div>
+                </div>
             </div>
 
-            <div class="col-md-1 search-query">
+            <div class="col-md-1 search-query same-height-col">
                 <div class="btn btn-default form-control search-query" type="button" value="" ng-click="countQuery(queryStringLeft, queryStringRight)">
                     <i class="glyphicon glyphicon-search"></i>
                 </div>

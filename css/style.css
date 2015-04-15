@@ -68,11 +68,11 @@ body, html {
 }
 .max-height {
     height: 100%;
-
 }
 
 .params-selector {
   padding: 20px;
+  margin-top: -30px;
 }
 
 .search-query {
@@ -96,4 +96,10 @@ body, html {
 .loadinggif {
   background:
     white url('../res/712.GIF') no-repeat right 10px center;
+}
+label{
+    font-size: 14px;
+}
+.checkbox{
+    margin-top: -10px;
 }
