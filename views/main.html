@@ -5,7 +5,17 @@
             <div class="col-md-4 col-md-offset-1 same-height-col" style="margin-top: 30px">
                 <div class="form-group search-query">
                     <input type="text" ng-class="{loadinggif: loading === true}" class="form-control search-query" placeholder="Левое слово" name="queryStringLeft" ng-model="params.leftWord">
-                </div><!--ng-change="sendQuery(queryString)" -->
+                    <!--<angucomplete-alt id="wordsLeft"
+                                      placeholder="Левое слово"
+                                      pause="400"
+                                      selected-object="leftWord"
+                                      remote-url="http://ams2.imilka.co/linksapi/public/words?query="
+                                      remote-url-data-field="words"
+                                      title-field="title"
+                                      description-field="email"
+                                      image-field="profilePic"
+                                      input-class="form-control form-control-small"/>-->
+                </div>
                 <div>
                     <div class="checkbox" style="float: left;">
                         <label>
