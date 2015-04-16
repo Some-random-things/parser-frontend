@@ -25,8 +25,17 @@
                 </div>
             </div>
 
-            <div class="col-md-2 search-query same-height-col">
-                <input type="text" ng-class="{loadinggif: loading === true}" class="form-control search-query" placeholder="предлог" name="queryPreposition" ng-model="params.preposition"> <!--ng-change="sendQuery(queryString)" -->
+            <div class="col-md-2 same-height-col" style="margin-top: 30px">
+                <div class="form-group search-query">
+                    <input type="text" ng-class="{loadinggif: loading === true}" class="form-control search-query" placeholder="предлог" name="queryPreposition" ng-model="params.preposition"> <!--ng-change="sendQuery(queryString)" -->
+                </div>
+                <div>
+                    <div class="checkbox" style="">
+                        <label>
+                            <input type="checkbox" ng-model="params.prepositionExactMatch"> точное совпадение
+                        </label>
+                    </div>
+                </div>
             </div>
 
             <div class="col-md-4 same-height-col" style="margin-top: 30px">

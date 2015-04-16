@@ -72,7 +72,7 @@ body, html {
 
 .params-selector {
   padding: 20px;
-  margin-top: -30px;
+  margin-top: -10px;
 }
 
 .search-query {
@@ -98,7 +98,7 @@ body, html {
     white url('../res/712.GIF') no-repeat right 10px center;
 }
 label{
-    font-size: 14px;
+    font-size: 11px;
 }
 .checkbox{
     margin-top: -10px;
