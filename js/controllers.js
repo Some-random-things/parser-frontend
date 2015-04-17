@@ -200,6 +200,9 @@ angular.module('starter.controllers', ['multi-select'])
                         })
                         done(result)
                     })
+            },
+            onSelect: function (suggestion) {
+                $scope.params.leftWord = suggestion.value;
             }
         });
         $('#preposition').autocomplete({
@@ -216,6 +219,9 @@ angular.module('starter.controllers', ['multi-select'])
                         })
                         done(result)
                     })
+            },
+            onSelect: function (suggestion) {
+                $scope.params.preposition = suggestion.value;
             }
         });
         $('#rightWord').autocomplete({
@@ -232,6 +238,9 @@ angular.module('starter.controllers', ['multi-select'])
                         })
                         done(result)
                     })
+            },
+            onSelect: function (suggestion) {
+                $scope.params.rightWord = suggestion.value;
             }
         });
 
