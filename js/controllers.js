@@ -186,6 +186,55 @@ angular.module('starter.controllers', ['multi-select'])
         $scope.wordLeftSelectedProperties = [];
         $scope.wordRightSelectedProperties = [];
 
+        $('#leftWord').autocomplete({
+            lookup: function(query, done){
+                $http.get('http://ams2.imilka.co/linksapi/public/words?query='+query)
+                    .success(function(data){
+                        var result = {
+                            suggestions: []
+                        }
+                        _.each(data.words, function(word){
+                            result.suggestions.push({
+                                value: word
+                            })
+                        })
+                        done(result)
+                    })
+            }
+        });
+        $('#preposition').autocomplete({
+            lookup: function(query, done){
+                $http.get('http://ams2.imilka.co/linksapi/public/words?query='+query)
+                    .success(function(data){
+                        var result = {
+                            suggestions: []
+                        }
+                        _.each(data.words, function(word){
+                            result.suggestions.push({
+                                value: word
+                            })
+                        })
+                        done(result)
+                    })
+            }
+        });
+        $('#rightWord').autocomplete({
+            lookup: function(query, done){
+                $http.get('http://ams2.imilka.co/linksapi/public/words?query='+query)
+                    .success(function(data){
+                        var result = {
+                            suggestions: []
+                        }
+                        _.each(data.words, function(word){
+                            result.suggestions.push({
+                                value: word
+                            })
+                        })
+                        done(result)
+                    })
+            }
+        });
+
         $scope.countQuery = function(){
             //TODO заменить
             //if(a != undefined && a.length > 2) {
