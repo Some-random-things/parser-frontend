@@ -188,7 +188,7 @@ angular.module('starter.controllers', ['multi-select'])
 
         $('#leftWord').autocomplete({
             lookup: function(query, done){
-                $http.get('http://ams2.imilka.co/linksapi/public/words?query='+query)
+                $http.get('http://ams2.imilka.co/linksapi/public/words?query='+query+'&type=leftWord&properties='+ $scope.getWordSelectedProperties($scope.wordLeftSelectedProperties))
                     .success(function(data){
                         var result = {
                             suggestions: []
@@ -204,7 +204,7 @@ angular.module('starter.controllers', ['multi-select'])
         });
         $('#preposition').autocomplete({
             lookup: function(query, done){
-                $http.get('http://ams2.imilka.co/linksapi/public/words?query='+query)
+                $http.get('http://ams2.imilka.co/linksapi/public/words?query='+query+'&type=preposition')
                     .success(function(data){
                         var result = {
                             suggestions: []
@@ -220,7 +220,7 @@ angular.module('starter.controllers', ['multi-select'])
         });
         $('#rightWord').autocomplete({
             lookup: function(query, done){
-                $http.get('http://ams2.imilka.co/linksapi/public/words?query='+query)
+                $http.get('http://ams2.imilka.co/linksapi/public/words?query='+query+'&type=rightWord&properties='+ $scope.getWordSelectedProperties($scope.wordRightSelectedProperties))
                     .success(function(data){
                         var result = {
                             suggestions: []
