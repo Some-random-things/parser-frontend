@@ -115,7 +115,11 @@
         <div class="col-md-12">
             <table class="table table-bordered table-striped table-hover table-condensed">
                 <thead>
-                <th ng-click="setField('wordLeft.word')">Левое слово</th>
+                <th class="pointer" ng-click="setField('wordLeft.word')">
+                    Левое слово
+                    <icon class="glyphicon glyphicon-chevron-down" ng-if="field === '-wordLeft.word' "></icon>
+                    <icon class="glyphicon glyphicon-chevron-up" ng-if="field === 'wordLeft.word' "></icon>
+                </th>
                 <th>Часть речи(Л)</th>
                 <th class="pointer" ng-if="prepositionsExist" ng-click="setField('preposition')">
                     Предлог
