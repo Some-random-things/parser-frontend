@@ -138,7 +138,10 @@ angular.module('starter.controllers', ['multi-select'])
                 .success(function (data, status, headers, config) {
                     //TODO тут сделать проверку с нвоым апи
                     //if(getQueryStringLeft() == data.query) {
-                        deferred.resolve(data.data);
+                    _.each(data.data, function(link){
+                        link.count = parseInt(link.count);
+                    })
+                    deferred.resolve(data.data);
                     //}
                 })
                 .error(function(){
@@ -178,13 +181,91 @@ angular.module('starter.controllers', ['multi-select'])
             leftWord: $location.search()['leftWord'] || null,
             rightWord: $location.search()['rightWord'] || null,
             preposition: $location.search()['preposition'] || null,
-            leftWordExactMatch: $location.search()['leftWordExactMatch'] || false,
-            rightWordExactMatch: $location.search()['rightWordExactMatch'] || false,
-            prepositionExactMatch: $location.search()['prepositionExactMatch'] || false
+            leftWordExactMatch: $location.search()['leftWordExactMatch'] || true,
+            rightWordExactMatch: $location.search()['rightWordExactMatch'] || true,
+            prepositionExactMatch: $location.search()['prepositionExactMatch'] || true
         }
 
-        $scope.wordLeftSelectedProperties = [];
-        $scope.wordRightSelectedProperties = [];
+        $scope.types = [
+            {
+                id: 0,
+                name: 'Глагол + Наречие',
+                properties: 'V,ADV',
+                leftProperties: 'V',
+                rightProperties: 'ADV'
+            },
+            {
+                id: 1,
+                name: 'Глагол + Существительное',
+                properties: 'V,N',
+                leftProperties: 'V',
+                rightProperties: 'N'
+            },
+            {
+                id: 2,
+                name: 'Деепричастие + Наречие',
+                properties: 'TRV,ADV',
+                leftProperties: 'TRV',
+                rightProperties: 'ADV'
+            },
+            {
+                id: 3,
+                name: 'Деепричастие + Существительное',
+                properties: 'TRV,N',
+                leftProperties: 'TRV',
+                rightProperties: 'N'
+            },
+            {
+                id: 4,
+                name: 'Прилагательное + Наречие',
+                properties: 'ADJ,ADV',
+                leftProperties: 'ADJ',
+                rightProperties: 'ADV'
+            },
+            {
+                id: 5,
+                name: 'Прилагательное + Существительное',
+                properties: 'ADJ,N',
+                leftProperties: 'ADJ',
+                rightProperties: 'N'
+            }
+        ]
+        if ($location.search()['type'] && $location.search()['type'].length > 0) $scope.selected = _.findWhere($scope.types, {id: parseInt($location.search()['type'])})
+
+        $scope.wordLeftSelectedProperties = $location.search()['leftProperties'] || [];
+        $scope.wordRightSelectedProperties = $location.search()['rightProperties'] || [];
+
+        $scope.field = '-count'
+        $scope.setField = function(field){
+            if($scope.field === field){
+                if($scope.field.indexOf('-') > -1){
+                    $scope.field = $scope.field.substring(1, $scope.field.length)
+                } else {
+                    $scope.field = '-' + $scope.field;
+                }
+            } else {
+                $scope.field = field;
+            }
+        }
+
+        $scope.$watch('selected', function(newval){
+            if(newval != null){
+                $location.search({
+                    'leftWord': ($scope.params.leftWord) ? $scope.params.leftWord : null,
+                    'rightWord': ($scope.params.rightWord) ? $scope.params.rightWord : null,
+                    'preposition': ($scope.params.preposition) ? $scope.params.preposition : null,
+                    'leftWordExactMatch': ($scope.params.leftWordExactMatch) ? $scope.params.leftWordExactMatch : null,
+                    'rightWordExactMatch': ($scope.params.rightWordExactMatch) ? $scope.params.rightWordExactMatch : null,
+                    leftProperties: newval.leftProperties,
+                    rightProperties: newval.rightProperties,
+                    type: newval.id
+                })
+                $scope.wordLeftSelectedProperties = [newval.leftProperties]
+                $scope.wordRightSelectedProperties = [newval.rightProperties]
+                dataService.setLeftSelectedProperties([newval.leftProperties])
+                dataService.setRightSelectedProperties([newval.rightProperties])
+            }
+        })
 
         $('#leftWord').autocomplete({
             lookup: function(query, done){
@@ -249,8 +330,6 @@ angular.module('starter.controllers', ['multi-select'])
             //if(a != undefined && a.length > 2) {
                 $scope.loading = true;
                 $scope.setParams();
-                dataService.setLeftSelectedProperties($scope.getWordSelectedProperties($scope.wordLeftSelectedProperties));
-                dataService.setRightSelectedProperties($scope.getWordSelectedProperties($scope.wordRightSelectedProperties));
                 dataService.sendCountRequest($scope.params.leftWord, $scope.params.rightWord, $scope.params.preposition).then(function(data){
                     $scope.loading = false;
                     $scope.data = data;
@@ -269,7 +348,10 @@ angular.module('starter.controllers', ['multi-select'])
                     'rightWord': ($scope.params.rightWord) ? $scope.params.rightWord : null,
                     'preposition': ($scope.params.preposition) ? $scope.params.preposition : null,
                     'leftWordExactMatch': ($scope.params.leftWordExactMatch) ? $scope.params.leftWordExactMatch : null,
-                    'rightWordExactMatch': ($scope.params.rightWordExactMatch) ? $scope.params.rightWordExactMatch : null
+                    'rightWordExactMatch': ($scope.params.rightWordExactMatch) ? $scope.params.rightWordExactMatch : null,
+                    leftProperties: $scope.wordLeftSelectedProperties.join(),
+                    rightProperties: $scope.wordRightSelectedProperties.join(),
+                    type: $scope.selected ? $scope.selected.id : 1
                 });
            // }
         }
@@ -277,11 +359,7 @@ angular.module('starter.controllers', ['multi-select'])
         $scope.onClick = function(){
             dataService.setLeftSelectedProperties($scope.getWordSelectedProperties($scope.wordLeftSelectedProperties));
             dataService.setRightSelectedProperties($scope.getWordSelectedProperties($scope.wordRightSelectedProperties));
-            dataService.sendCountRequest(
-                dataService.getQueryStringLeft(),
-                dataService.getQueryStringRight(),
-                dataService.getQueryPreposition()
-            );
+            dataService.sendCountRequest();
         }
 
         $scope.wordLeft = true;
@@ -321,19 +399,19 @@ angular.module('starter.controllers', ['multi-select'])
         ];
 
         $scope.getWordSelectedProperties = function(selectedPropertiesObjects) {
-            var selectedPropertiesArray = [];
+            /*var selectedPropertiesArray = [];
             for(var i in selectedPropertiesObjects) {
                 if(selectedPropertiesObjects[i].ticked) {
                     selectedPropertiesArray.push(selectedPropertiesObjects[i].handle);
                 }
-            }
-            return selectedPropertiesArray;
+            }*/
+            return selectedPropertiesObjects;
         }
 
         //initial request
         $timeout(function(){
-            dataService.setLeftSelectedProperties($scope.getWordSelectedProperties($scope.wordLeftSelectedProperties));
-            dataService.setRightSelectedProperties($scope.getWordSelectedProperties($scope.wordRightSelectedProperties));
+           // dataService.setLeftSelectedProperties($scope.getWordSelectedProperties($scope.wordLeftSelectedProperties));
+           // dataService.setRightSelectedProperties($scope.getWordSelectedProperties($scope.wordRightSelectedProperties));
             $scope.countQuery();
         }, 100)
 

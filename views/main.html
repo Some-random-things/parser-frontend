@@ -49,6 +49,16 @@
         </div>
 
         <div class="row">
+
+            <div class="col-md-4 col-md-offset-4 text-center">
+                <div>
+                    Связь
+                </div>
+                <select ng-options="item.name for item in types track by item.id" ng-model="selected">
+                    <option value="">Выберите связь</option>
+                </select>
+            </div>
+            <!--
             <div class="col-md-3 params-selector col-md-offset-3">
                 <div class="row">
                     <label class="form-control">
@@ -94,6 +104,7 @@
                     </div>
                 </div>
             </div>
+            -->
         </div>
     </div>
 
@@ -104,15 +115,27 @@
         <div class="col-md-12">
             <table class="table table-bordered table-striped table-hover table-condensed">
                 <thead>
-                <th>Левое слово</th>
+                <th ng-click="setField('wordLeft.word')">Левое слово</th>
                 <th>Часть речи(Л)</th>
-                <th ng-if="prepositionsExist">Предлог</th>
-                <th>Правое слово</th>
+                <th class="pointer" ng-if="prepositionsExist" ng-click="setField('preposition')">
+                    Предлог
+                    <icon class="glyphicon glyphicon-chevron-down" ng-if="field === '-preposition' "></icon>
+                    <icon class="glyphicon glyphicon-chevron-up" ng-if="field === 'preposition' "></icon>
+                </th>
+                <th class="pointer" ng-click="setField('wordRight.word')">
+                    Правое слово
+                    <icon class="glyphicon glyphicon-chevron-down" ng-if="field === '-wordRight.word' "></icon>
+                    <icon class="glyphicon glyphicon-chevron-up" ng-if="field === 'wordRight.word' "></icon>
+                </th>
                 <th>Часть речи(П)</th>
-                <th>Кол-во связей</th>
+                <th class="pointer" ng-click="setField('count')">
+                    Кол-во связей
+                    <icon class="glyphicon glyphicon-chevron-down" ng-if="field === '-count' "></icon>
+                    <icon class="glyphicon glyphicon-chevron-up" ng-if="field === 'count' "></icon>
+                </th>
                 </thead>
                 <tbody>
-                <tr ng-repeat="link in data">
+                <tr ng-repeat="link in data | orderBy:field">
                     <td>{{link.wordLeft.word}}</td>
                     <td>{{link.wordLeft.partOfSpeechLong}}</td>
                     <td ng-if="prepositionsExist">{{link.preposition}}</td>
