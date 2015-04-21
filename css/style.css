@@ -109,3 +109,6 @@ label{
 .pointer{
     cursor: pointer;
 }
+.hidden{
+    visibility: hidden;
+}

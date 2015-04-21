@@ -342,7 +342,6 @@ angular.module('starter.controllers', ['multi-select'])
                     $scope.prepositionsExist = _.filter($scope.data, function(element){
                         return element.preposition != null
                     }).length > 0;
-                    if($scope.selected.id !== 1) $scope.prepositionsExist = false;
                 })
                 $location.search({
                     'leftWord': ($scope.params.leftWord) ? $scope.params.leftWord : null,
